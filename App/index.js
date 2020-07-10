@@ -2,13 +2,13 @@ import React from 'react';
 import { SafeAreaView, View, StyleSheet, Text } from 'react-native';
 
 
-import { Login } from './screens';
+import { Login, Home } from './screens';
 
 export default () => {
         return (
             <SafeAreaView style={styles.container}>
                 <View style={{ marginTop: 30 }}>
-                    <Login />
+                    <Home />
                 </View>
             </SafeAreaView>
         )
