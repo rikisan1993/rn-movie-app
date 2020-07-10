@@ -9,7 +9,7 @@ const customFonts = {
     'Source-Sans-Pro-Bold': require('../../assets/fonts/SourceSansPro-Bold.ttf')
 }
 
-export const ScreenContainer = ({children}) => {
+export const ScreenContainer = ({children, style}) => {
     const [fontsLoaded, setFontsLoaded] = React.useState(false);
 
     const loadFont = async () => {
@@ -23,7 +23,7 @@ export const ScreenContainer = ({children}) => {
 
     if(fontsLoaded) {
         return (
-            <View style={styles.container}>{children}</View>
+            <View style={{...styles.container, ...style}}>{children}</View>
         )
     } else {
         return (
