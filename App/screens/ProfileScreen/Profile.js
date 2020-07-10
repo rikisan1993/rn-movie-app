@@ -4,8 +4,10 @@ import Icon from '@expo/vector-icons/FontAwesome';
 import { ScreenContainer } from '../../components';
 
 const DEVICE = Dimensions.get('window');
+import { AuthContext } from '../../auth-context';
 
 export const Profile = () => {
+    const { signout } = React.useContext(AuthContext);
     return (
         <ScreenContainer style={styles.container}>
             <Image source={{uri: 'https://images.unsplash.com/uploads/141148589884100082977/a816dbd7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'}} style={styles.backdrop} />
@@ -19,6 +21,12 @@ export const Profile = () => {
 
                     <Text style={styles.name}>Riki Syahputra</Text>
                     <Text style={styles.email}>kosiriki@gmail.com</Text>
+                </View>
+
+                <View>
+                    <TouchableOpacity style={styles.signout} onPress={signout}>
+                        <Text style={styles.signoutText}>Sign Out</Text>
+                    </TouchableOpacity>
                 </View>
 
                 <View style={styles.links}>
@@ -107,5 +115,19 @@ const styles = StyleSheet.create({
         fontFamily: 'Source-Sans-Pro-Regular',
         color: '#333',
         marginTop: -2
+    },
+    signout: {
+        width: '30%',
+        alignSelf: 'center',
+        alignItems: 'center',
+        marginTop: 24,
+        padding: 8,
+        backgroundColor: '#F0F0F0',
+        borderRadius: 4
+    },
+    signoutText: {
+        fontSize: 14,
+        fontFamily: 'Source-Sans-Pro-Regular',
+        color: '#333',
     }
 })

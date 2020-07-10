@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import Icon from '@expo/vector-icons/FontAwesome5';
 import * as Font from 'expo-font';
+import { AuthContext } from '../../auth-context';
 
 const customFonts = {
     'Lora-Bold': require('../../../assets/fonts/Lora-Bold.ttf'),
@@ -22,6 +23,8 @@ export const Login = () => {
         loadFont()
     })
 
+    const { signin } = React.useContext(AuthContext);
+
     if(fontsLoaded) {
         return (
             <View style={styles.container}>
@@ -40,7 +43,7 @@ export const Login = () => {
                         <TextInput style={styles.loginInput} placeholder='password' secureTextEntry={true} />
                     </View>
 
-                    <TouchableOpacity style={styles.loginButton}>
+                    <TouchableOpacity style={styles.loginButton} onPress={() => signin({token: 'test'})}>
                         <Text style={styles.loginButtonText}>login</Text>
                     </TouchableOpacity>
                 </View>

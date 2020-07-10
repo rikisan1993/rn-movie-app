@@ -4,16 +4,15 @@ import { ListItem } from './components';
 import { ScreenContainer } from '../../components';
 
 import data from './sample/data.json';
-export const Home = () => {
+export const Home = ({ navigation }) => {
 
     return (
         <ScreenContainer>
-            <Text style={{ fontFamily: 'Lora-Bold' }}>Home Screen</Text>
             <View>
                 <FlatList
                 style={styles.listContainer}
                     data={data.results}
-                    renderItem={({item}) => <TouchableOpacity>
+                    renderItem={({item}) => <TouchableOpacity onPress={() => navigation.push('Detail', {movie: item})}>
                         <ListItem data={item} stye={styles.item} />
                     </TouchableOpacity>}
                     keyExtractor={item => item.id + ''} />
