@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 
-import { ScreenContainer } from '../components';
+import { ScreenContainer } from '../../components';
 
 export const Login = () => {
     return (
