@@ -3,13 +3,11 @@ import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Stars } from './Stars';
 import Icon from '@expo/vector-icons/FontAwesome';
 
-import config from '../sample/configuration.json';
-import {genres} from  '../sample/genres.json';
+import { genres, base_url } from  '../../../constants';
 
 export const ListItem = ({data}) => {
     const getPosterURI = path => {
-        const { base_url, poster_sizes} = config.images;
-        return `${base_url}${poster_sizes[3]}${path}`
+        return `${base_url}w342${path}`
     }
 
     const getReleaseYear = date => {
