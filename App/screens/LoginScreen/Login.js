@@ -20,7 +20,12 @@ export const Login = () => {
     }
 
     React.useEffect(() => {
-        loadFont()
+        let cancelled = false;
+        if(!cancelled) loadFont()
+
+        return () => {
+            cancelled = true;
+        }
     })
 
     const { signin } = React.useContext(AuthContext);
