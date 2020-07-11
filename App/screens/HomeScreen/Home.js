@@ -75,7 +75,7 @@ export const Home = ({ navigation }) => {
             .then(setMovieList)
             
             .then(_ => setIsLoading(false))
-            .catch(err => console.log({err}))
+            .catch(err => {})
         
         return () => {
             cancelled = true
