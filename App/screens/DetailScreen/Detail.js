@@ -109,6 +109,9 @@ export const Detail = ({route}) => {
                     <Text style={styles.sectionTitle}>Cast</Text>
                     <View style={styles.castContainer}>
                         <FlatList
+                            updateCellsBatchingPeriod={1000}
+                            maxToRenderPerBatch={5}
+                            removeClippedSubviews={true}
                             data={(casts || []).filter(caster => !!caster.profile_path)}
                             renderItem={({item}) => {
                                 return (
@@ -132,6 +135,9 @@ export const Detail = ({route}) => {
                     <Text style={styles.sectionTitle}>Crew</Text>
                     <View style={styles.castContainer}>
                         <FlatList
+                            updateCellsBatchingPeriod={1000}
+                            maxToRenderPerBatch={5}
+                            removeClippedSubviews={true}
                             data={(crews || []).filter(crew => crew.profile_path != null)}
                             renderItem={({item}) => {
                                 return (

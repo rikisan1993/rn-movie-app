@@ -39,6 +39,9 @@ export const Home = ({ navigation }) => {
     return (
             <View>
                 <FlatList
+                    updateCellsBatchingPeriod={1000}
+                    maxToRenderPerBatch={5}
+                    removeClippedSubviews={true}
                     style={styles.listContainer}
                     data={moveList}
                     renderItem={({item}) => <TouchableOpacity onPress={() => navigation.push('Detail', {movie: item})}>
