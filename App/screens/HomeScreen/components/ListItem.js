@@ -3,26 +3,17 @@ import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Stars } from './Stars';
 import Icon from '@expo/vector-icons/FontAwesome';
 
-import { genres, base_url } from  '../../../constants';
-
 export const ListItem = ({data}) => {
-    const getPosterURI = path => {
-        return `${base_url}w342${path}`
-    }
-
-    const getReleaseYear = date => {
-        return `(${date.split('-')[0]})`;
-    }
 
     return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>
-                <Image source={{ uri: getPosterURI(data.poster_path) }} style={styles.image} />
+                <Image title='somethin' source={{ uri: data.poster_uri }} style={styles.image} />
             </View>
             <View style={styles.detailContainer}>
                 <Text style={styles.title} numberOfLines={2} lineBreakMode={'clip'}>{data.title}</Text>
                 <Stars value={data.vote_average} />
-                <Text style={styles.year}>{getReleaseYear(data.release_date)}</Text>
+                <Text style={styles.year}>{data.release_year}</Text>
                 <View style={styles.genreContainer}>
                     {data.genres.map((name, index) =>(
                         <View style={styles.genreWrapper} key={index}>
