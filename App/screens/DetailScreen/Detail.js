@@ -15,7 +15,8 @@ export const Detail = ({route}) => {
 
     React.useEffect(() => {
         setMovie(route.params.movie)
-        fetch(getCredits(id))
+        const {id} = route.params.movie;
+        fetch(getCredits(movie.id))
             .then(res => res.json())
             .then(({cast, crew}) => {
                 setCasts(cast);
@@ -27,7 +28,7 @@ export const Detail = ({route}) => {
                 setIsError(true);
                 console.log({err})
             })
-    })
+    })  
     
     const getBackdropURI = path => {        
         return `${base_url}w1280${path}`
@@ -53,8 +54,7 @@ export const Detail = ({route}) => {
         return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text>Failed to load Movie Details</Text></View>
     }
 
-    const { 
-        id,
+    const {
         backdrop_path, 
         genres, 
         poster_path, 
@@ -108,7 +108,7 @@ export const Detail = ({route}) => {
                     <Text style={styles.sectionTitle}>Cast</Text>
                     <View style={styles.castContainer}>
                         <FlatList
-                            data={casts.filter(caster => !!caster.profile_path)}
+                            data={(casts || []).filter(caster => !!caster.profile_path)}
                             renderItem={({item}) => {
                                 return (
                                     <View style={styles.castImageContainer}>
@@ -131,7 +131,7 @@ export const Detail = ({route}) => {
                     <Text style={styles.sectionTitle}>Crew</Text>
                     <View style={styles.castContainer}>
                         <FlatList
-                            data={crews.filter(crew => crew.profile_path != null)}
+                            data={(crews || []).filter(crew => crew.profile_path != null)}
                             renderItem={({item}) => {
                                 return (
                                     <View style={styles.castImageContainer}>
@@ -141,8 +141,8 @@ export const Detail = ({route}) => {
                                         <Text style={styles.castName}>{item.name}</Text>
                                         <Text style={styles.castCharacterName}>{item.job}</Text> 
                                     </View>
-                                )
-                            }}
+                                )}
+                            }
                             horizontal={true}
                             keyExtractor={item => item.id + '' + item.credit_id}
                             showsHorizontalScrollIndicator={false} />
