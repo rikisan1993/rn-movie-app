@@ -1,9 +1,6 @@
 import React from 'react';
-import { StyleSheet, View, Text, Dimensions, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import Icon from '@expo/vector-icons/FontAwesome';
-import { ScreenContainer } from '../../components';
-
-const DEVICE = Dimensions.get('window');
 import { AuthContext } from '../../auth-context';
 
 export const Profile = () => {

@@ -18,7 +18,12 @@ export const ScreenContainer = ({children, style}) => {
     }
 
     React.useEffect(() => {
-        loadFont()
+        let cancelled = false;
+        if(!cancelled) loadFont()
+
+        return () => {
+            cancelled = true
+        }
     })
 
     if(fontsLoaded) {
