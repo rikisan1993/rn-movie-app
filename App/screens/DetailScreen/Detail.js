@@ -1,41 +1,73 @@
 import React from 'react';
 import { View, Image, StyleSheet, Dimensions, Text, FlatList, ScrollView } from 'react-native';
-
-import { ScreenContainer } from '../../components';
-import data from './sample/data.json';
-import config from './sample/configuration.json';
-import { cast, crew } from './sample/cast.json';
-
 import { Stars } from './component';
 
-const DEVICE = Dimensions.get('window')
+const DEVICE = Dimensions.get('window');
 
-export const Detail = ({id}) => {
+import { base_url, getCredits } from '../../constants';
+
+export const Detail = ({route}) => {
+    const [casts, setCasts] = React.useState([]);
+    const [crews, setCrews] = React.useState([]);
+    const [movie, setMovie] = React.useState({});
+    const [isLoading, setIsLoading] = React.useState(true);
+    const [isError, setIsError] = React.useState(false);
+
+    React.useEffect(() => {
+        setMovie(route.params.movie)
+        const {id} = route.params.movie;
+        fetch(getCredits(movie.id))
+            .then(res => res.json())
+            .then(({cast, crew}) => {
+                setCasts(cast);
+                setCrews(crew);
+                setIsLoading(false);
+                setIsError(false);
+            })
+            .catch(err => {
+                setIsError(true);
+                console.log({err})
+            })
+    })  
     
-    const getBackdropURI = path => {
-        const { base_url, backdrop_sizes} = config.images;
-        return `${base_url}${backdrop_sizes[2]}${path}`
+    const getBackdropURI = path => {        
+        return `${base_url}w1280${path}`
     }
 
-    const getPosterURI = path => {
-        const { base_url, poster_sizes} = config.images;
-        return `${base_url}${poster_sizes[3]}${path}`
+    const getPosterURI = path => {        
+        return `${base_url}w342${path}`
     }
 
-    const getProfileURI = path => {
-        const { base_url, profile_sizes} = config.images;
-        return `${base_url}${profile_sizes[1]}${path}`
+    const getProfileURI = path => {        
+        return `${base_url}w185${path}`
     }
 
     const getReleaseYear = date => {
         return `(${date.split('-')[0]})`;
     }
 
+    if(isLoading) {
+        return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text>Loading Movie Details ... </Text></View>
+    }
+
+    if(isError) {
+        return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text>Failed to load Movie Details</Text></View>
+    }
+
+    const {
+        backdrop_path, 
+        genres, 
+        poster_path, 
+        release_date, 
+        title, 
+        vote_average, 
+        overview 
+    } = movie;
+
     return (
-        <ScreenContainer>
             <ScrollView>
             <Image 
-                source={{uri:getBackdropURI(data.backdrop_path)}} 
+                source={{uri:getBackdropURI(backdrop_path)}} 
                 style={styles.backdrop}
                 blurRadius={1}
                 resizeMode={'cover'} />
@@ -43,40 +75,40 @@ export const Detail = ({id}) => {
                 <View style={styles.headContainer}>
                     <View style={styles.posterContainer}>
                         <Image
-                        source={{uri: getPosterURI(data.poster_path)}}
+                        source={{uri: getPosterURI(poster_path)}}
                         style={styles.poster}
                         resizeMode='cover' />
                     </View>
                     <View style={{ flex: 1 }}>
                         <Text style={styles.title}>
-                            {data.title}
+                            {title}
                         </Text>
                         <Text style={styles.year}>
-                            {getReleaseYear(data.release_date)}
+                            {getReleaseYear(release_date)}
                         </Text>
                         <View style={styles.genreContainer}>
-                        {data.genres.map(({id, name}) =>(
-                            <View style={styles.genreWrapper} key={id}>
-                                <Text style={styles.genre}>{name}</Text>
+                        {genres.map((genre, index) =>(
+                            <View style={styles.genreWrapper} key={index}>
+                                <Text style={styles.genre}>{genre}</Text>
                             </View>
                         ))}
                         </View>
                         <View style={{ justifyContent: 'flex-end'}}>
-                            <Stars value={data.vote_average}/>
+                            <Stars value={vote_average}/>
                         </View>
                     </View>
                 </View>
 
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Introduction</Text>
-                    <Text style={styles.overview}>{data.overview}</Text>
+                    <Text style={styles.overview}>{overview}</Text>
                 </View>
 
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Cast</Text>
                     <View style={styles.castContainer}>
                         <FlatList
-                            data={cast.filter(caster => !!caster.profile_path)}
+                            data={(casts || []).filter(caster => !!caster.profile_path)}
                             renderItem={({item}) => {
                                 return (
                                     <View style={styles.castImageContainer}>
@@ -99,7 +131,7 @@ export const Detail = ({id}) => {
                     <Text style={styles.sectionTitle}>Crew</Text>
                     <View style={styles.castContainer}>
                         <FlatList
-                            data={crew.filter(crew => crew.profile_path != null)}
+                            data={(crews || []).filter(crew => crew.profile_path != null)}
                             renderItem={({item}) => {
                                 return (
                                     <View style={styles.castImageContainer}>
@@ -109,8 +141,8 @@ export const Detail = ({id}) => {
                                         <Text style={styles.castName}>{item.name}</Text>
                                         <Text style={styles.castCharacterName}>{item.job}</Text> 
                                     </View>
-                                )
-                            }}
+                                )}
+                            }
                             horizontal={true}
                             keyExtractor={item => item.id + '' + item.credit_id}
                             showsHorizontalScrollIndicator={false} />
@@ -118,7 +150,6 @@ export const Detail = ({id}) => {
                 </View>
             </View>
             </ScrollView>
-        </ScreenContainer>
     )
 }
 
