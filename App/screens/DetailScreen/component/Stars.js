@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import Icon from '@expo/vector-icons/FontAwesome';
 
-export const Stars = ({value}) => {
+export const Stars = React.memo(({value}) => {
         
     return (
         <View style={styles.container}>
@@ -10,7 +10,7 @@ export const Stars = ({value}) => {
             <Text style={styles.starText}>{value.toFixed(1)}</Text>
         </View>
     )
-}
+})
 
 const styles = StyleSheet.create({
     container: {
