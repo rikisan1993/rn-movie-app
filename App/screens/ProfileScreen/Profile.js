@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, Dimensions, Image, TouchableOpacity } from 'react-native';
-import { CachedImage } from 'react-native-cached-image';
 import Icon from '@expo/vector-icons/FontAwesome';
+import { ScreenContainer } from '../../components';
 
 const DEVICE = Dimensions.get('window');
 import { AuthContext } from '../../auth-context';
@@ -10,12 +10,12 @@ export const Profile = () => {
     const { signout } = React.useContext(AuthContext);
     return (
         <View>
-            <CachedImage source={{uri: 'https://images.unsplash.com/uploads/141148589884100082977/a816dbd7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'}} style={styles.backdrop} />
+            <Image source={{uri: 'https://images.unsplash.com/uploads/141148589884100082977/a816dbd7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'}} style={styles.backdrop} />
             <View style={styles.main}>
                 <View style={styles.profile}>
                     <View style={styles.profilePictureContainer}>
                         <View style={styles.profileBackdrop}>
-                            <CachedImage style={styles.profilePicture} source={{uri: 'https://sanbercode.com/images/profil/profil_user_5239_image.jpg'}} />
+                            <Image style={styles.profilePicture} source={{uri: 'https://sanbercode.com/images/profil/profil_user_5239_image.jpg'}} />
                         </View>
                     </View>
 

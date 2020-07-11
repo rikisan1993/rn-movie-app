@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, FlatList, TouchableOpacity, Text, Dimensions } from 'react-native';
-
 import { ListItem } from './components';
+import { ScreenContainer } from '../../components';
 
 const DEVICE = Dimensions.get('window');
 

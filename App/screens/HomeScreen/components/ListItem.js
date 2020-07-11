@@ -1,6 +1,5 @@
 import React from 'react';
 import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { CachedImage } from 'react-native-cached-image';
 import { Stars } from './Stars';
 import Icon from '@expo/vector-icons/FontAwesome';
 
@@ -18,7 +17,7 @@ export const ListItem = ({data}) => {
     return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>
-                <CachedImage source={{ uri: getPosterURI(data.poster_path) }} style={styles.image} />
+                <Image source={{ uri: getPosterURI(data.poster_path) }} style={styles.image} />
             </View>
             <View style={styles.detailContainer}>
                 <Text style={styles.title} numberOfLines={2} lineBreakMode={'clip'}>{data.title}</Text>
