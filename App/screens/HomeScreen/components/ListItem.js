@@ -3,22 +3,15 @@ import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Stars } from './Stars';
 import Icon from '@expo/vector-icons/FontAwesome';
 
-import config from '../sample/configuration.json';
-import {genres} from  '../sample/genres.json';
+import { genres, base_url } from  '../../../constants';
 
 export const ListItem = ({data}) => {
     const getPosterURI = path => {
-        const { base_url, poster_sizes} = config.images;
-        return `${base_url}${poster_sizes[3]}${path}`
+        return `${base_url}w342${path}`
     }
 
     const getReleaseYear = date => {
         return `(${date.split('-')[0]})`;
-    }
-
-    const genreMap = {};
-    for(let i = 0; i < genres.length; i++) {
-        genreMap[genres[i].id] = genres[i].name;
     }
 
     return (
@@ -31,7 +24,7 @@ export const ListItem = ({data}) => {
                 <Stars value={data.vote_average} />
                 <Text style={styles.year}>{getReleaseYear(data.release_date)}</Text>
                 <View style={styles.genreContainer}>
-                    {data.genre_ids.map(id => genreMap[id]).map((name, index) =>(
+                    {data.genres.map((name, index) =>(
                         <View style={styles.genreWrapper} key={index}>
                             <Text style={styles.genre}>{name}</Text>
                         </View>
