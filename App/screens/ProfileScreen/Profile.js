@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text, Dimensions, Image, TouchableOpacity } from 'react-native';
+import FastImage from 'react-native-fast-image'
 import Icon from '@expo/vector-icons/FontAwesome';
 import { ScreenContainer } from '../../components';
 
@@ -10,12 +11,12 @@ export const Profile = () => {
     const { signout } = React.useContext(AuthContext);
     return (
         <View>
-            <Image source={{uri: 'https://images.unsplash.com/uploads/141148589884100082977/a816dbd7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'}} style={styles.backdrop} />
+            <FastImage source={{uri: 'https://images.unsplash.com/uploads/141148589884100082977/a816dbd7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'}} style={styles.backdrop} />
             <View style={styles.main}>
                 <View style={styles.profile}>
                     <View style={styles.profilePictureContainer}>
                         <View style={styles.profileBackdrop}>
-                            <Image style={styles.profilePicture} source={{uri: 'https://sanbercode.com/images/profil/profil_user_5239_image.jpg'}} />
+                            <FastImage style={styles.profilePicture} source={{uri: 'https://sanbercode.com/images/profil/profil_user_5239_image.jpg'}} />
                         </View>
                     </View>
 
