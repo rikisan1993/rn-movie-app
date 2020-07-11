@@ -9,7 +9,7 @@ import { AuthContext } from '../../auth-context';
 export const Profile = () => {
     const { signout } = React.useContext(AuthContext);
     return (
-        <ScreenContainer style={styles.container}>
+        <View>
             <Image source={{uri: 'https://images.unsplash.com/uploads/141148589884100082977/a816dbd7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'}} style={styles.backdrop} />
             <View style={styles.main}>
                 <View style={styles.profile}>
@@ -44,7 +44,7 @@ export const Profile = () => {
                     </TouchableOpacity>
                 </View>
             </View>
-        </ScreenContainer>
+        </View>
     )
 }
 

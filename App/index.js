@@ -4,9 +4,6 @@ import { SafeAreaView, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthContext } from './auth-context';
-import { AppContext } from './app-context';
-
-import { getConfig, getGenres } from './constants';
 import { Login, Home, Detail, Profile } from './screens';
 import { AboutButton, ScreenContainer, Title } from './components';
 

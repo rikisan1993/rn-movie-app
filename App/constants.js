@@ -2,10 +2,10 @@ import * as Config from '../config';
 
 const apikey = Config.MOVIE_API_KEY;
 export const getMovieDetail = movieID => `https://api.themoviedb.org/3/movie/${movieID}?api_key=${apikey}`;
-export const getGenres = () => `https://api.themoviedb.org/3/genre/movie/list?api_key=${apikey}`;
-export const getConfig = () => `https://api.themoviedb.org/3/configuration?api_key=${apikey}`;
 export const getCredits = movieID => `https://api.themoviedb.org/3/movie/${movieID}/credits?api_key=${apikey}`;
 export const getMovies = () => `https://api.themoviedb.org/3/discover/movie?api_key=${apikey}`;
+export const getConfig = () => `https://api.themoviedb.org/3/configuration?api_key=${apikey}`;
+export const getGenres = () => `https://api.themoviedb.org/3/genre/movie/list?api_key=${apikey}`;
 
 export const base_url = 'http://image.tmdb.org/t/p/';
 export const secure_base_url = 'https://image.tmdb.org/t/p/';

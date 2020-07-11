@@ -5,17 +5,29 @@ import { ScreenContainer } from '../../components';
 
 const DEVICE = Dimensions.get('window');
 
-import { getMovies } from '../../constants';
+import { getMovies, genres } from '../../constants';
 export const Home = ({ navigation }) => {
     const [moveList, setMovieList] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(true)
+
+    const genreMap = {};
+    for(let i = 0; i < genres.length; i++) {
+        genreMap[genres[i].id] = genres[i].name;
+    }
+
+    const mapMovieGenres = list => {
+        return list.map(movie => {
+            movie.genres = movie.genre_ids.map(id => genreMap[id]);
+            return movie;
+        })
+    }
 
     React.useEffect(() => {
         fetch(getMovies())
             .then(res => res.json())
             .then(({results}) => {
                 setIsLoading(false)
-                setMovieList(results)
+                setMovieList(mapMovieGenres(results));
             })
             .catch(err => console.log({err}))
     })
@@ -25,7 +37,6 @@ export const Home = ({ navigation }) => {
     }
     
     return (
-        <ScreenContainer>
             <View>
                 <FlatList
                     style={styles.listContainer}
@@ -35,7 +46,6 @@ export const Home = ({ navigation }) => {
                     </TouchableOpacity>}
                     keyExtractor={item => item.id + ''} />
             </View>
-        </ScreenContainer>
     )
 }
 

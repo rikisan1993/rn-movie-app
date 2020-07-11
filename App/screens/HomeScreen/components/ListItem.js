@@ -14,11 +14,6 @@ export const ListItem = ({data}) => {
         return `(${date.split('-')[0]})`;
     }
 
-    const genreMap = {};
-    for(let i = 0; i < genres.length; i++) {
-        genreMap[genres[i].id] = genres[i].name;
-    }
-
     return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>
@@ -29,7 +24,7 @@ export const ListItem = ({data}) => {
                 <Stars value={data.vote_average} />
                 <Text style={styles.year}>{getReleaseYear(data.release_date)}</Text>
                 <View style={styles.genreContainer}>
-                    {data.genre_ids.map(id => genreMap[id]).map((name, index) =>(
+                    {data.genres.map((name, index) =>(
                         <View style={styles.genreWrapper} key={index}>
                             <Text style={styles.genre}>{name}</Text>
                         </View>
