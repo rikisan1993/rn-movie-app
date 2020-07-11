@@ -6,68 +6,93 @@ const DEVICE = Dimensions.get('window');
 
 import { base_url, getCredits } from '../../constants';
 
+const getProfileURI = path => {        
+    return `${base_url}w185${path}`
+}
+
+const mapProfileURI = list => {
+    return [...list].map(item => {
+        item.profile_uri = getProfileURI(item.profile_path);
+        return item;
+    })
+}
+
+const Loading = React.memo(() => (<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text>Loading Movie Details ... </Text></View>));
+
+const Genre = React.memo(({ genre }) => (
+    <View style={styles.genreWrapper}>
+        <Text style={styles.genre}>{genre}</Text>
+    </View>
+))
+
+const genreMapper = genres => [...genres].map((genre, index) => <Genre genre={genre} key={index} />);
+
+const Credits = React.memo(({profile_uri, name, job, character}) => (
+    <View style={styles.castImageContainer}>
+        <View style={{ backgroundColor: '#ccc', borderRadius: 8, overflow: 'hidden', marginBottom: 8}}>
+            <Image style={styles.castImage} source={{uri: profile_uri}} />
+        </View>
+        <Text style={styles.castName}>{name}</Text>
+        <Text style={styles.castCharacterName}>{character || job}</Text> 
+    </View>
+))
+
+const renderCredits = ({item}) => <Credits profile_uri={item.profile_uri} name={item.name} job={item.job} character={item.character} />
+
+const keyExtractor = item => item.id + '' + (item.credit_id || '')
+
 export const Detail = ({route}) => {
     const [casts, setCasts] = React.useState([]);
     const [crews, setCrews] = React.useState([]);
     const [movie, setMovie] = React.useState({});
     const [isLoading, setIsLoading] = React.useState(true);
-    const [isError, setIsError] = React.useState(false);
 
     React.useEffect(() => {
+        let cancelled = false;
         setMovie(route.params.movie)
-        const {id} = route.params.movie;
         fetch(getCredits(movie.id))
+            .then(res => {
+                if(cancelled) throw new Error('cancelled!')
+                return res;
+            })
             .then(res => res.json())
+            .then(({cast, crew}) => ({cast: mapProfileURI(cast), crew: mapProfileURI(crew)}))
             .then(({cast, crew}) => {
-                setCasts(cast);
-                setCrews(crew);
+                if(!cancelled) {
+                    setCasts(([...cast] || []).filter(item => item.profile_path));
+                    setCrews(([...crew] || []).filter(item => item.profile_path));
+                }
+            })
+            .then(_ => {
                 setIsLoading(false);
-                setIsError(false);
             })
-            .catch(err => {
-                setIsError(true);
-                console.log({err})
-            })
+            .catch(err => {})
+
+        return () => {
+            cancelled = true;
+        }
     })  
     
-    const getBackdropURI = path => {        
-        return `${base_url}w1280${path}`
-    }
-
-    const getPosterURI = path => {        
-        return `${base_url}w342${path}`
-    }
-
-    const getProfileURI = path => {        
-        return `${base_url}w185${path}`
-    }
-
-    const getReleaseYear = date => {
-        return `(${date.split('-')[0]})`;
-    }
+    
 
     if(isLoading) {
-        return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text>Loading Movie Details ... </Text></View>
-    }
-
-    if(isError) {
-        return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text>Failed to load Movie Details</Text></View>
+        return <Loading />
     }
 
     const {
-        backdrop_path, 
+        backdrop_uri, 
         genres, 
-        poster_path, 
-        release_date, 
         title, 
         vote_average, 
-        overview 
+        overview,
+        release_year,
+        poster_uri
     } = movie;
 
     return (
             <ScrollView>
             <Image 
-                source={{uri:getBackdropURI(backdrop_path)}} 
+                source={{uri:backdrop_uri}} 
                 style={styles.backdrop}
                 blurRadius={1}
                 resizeMode={'cover'} />
@@ -75,7 +100,7 @@ export const Detail = ({route}) => {
                 <View style={styles.headContainer}>
                     <View style={styles.posterContainer}>
                         <Image
-                        source={{uri: getPosterURI(poster_path)}}
+                        source={{uri: poster_uri}}
                         style={styles.poster}
                         resizeMode='cover' />
                     </View>
@@ -84,15 +109,9 @@ export const Detail = ({route}) => {
                             {title}
                         </Text>
                         <Text style={styles.year}>
-                            {getReleaseYear(release_date)}
+                            {release_year}
                         </Text>
-                        <View style={styles.genreContainer}>
-                        {genres.map((genre, index) =>(
-                            <View style={styles.genreWrapper} key={index}>
-                                <Text style={styles.genre}>{genre}</Text>
-                            </View>
-                        ))}
-                        </View>
+                        <View style={styles.genreContainer}>{genreMapper(genres)}</View>
                         <View style={{ justifyContent: 'flex-end'}}>
                             <Stars value={vote_average}/>
                         </View>
@@ -108,23 +127,13 @@ export const Detail = ({route}) => {
                     <Text style={styles.sectionTitle}>Cast</Text>
                     <View style={styles.castContainer}>
                         <FlatList
-                            updateCellsBatchingPeriod={1000}
+                            updateCellsBatchingPeriod={60000}
                             maxToRenderPerBatch={5}
                             removeClippedSubviews={true}
-                            data={(casts || []).filter(caster => !!caster.profile_path)}
-                            renderItem={({item}) => {
-                                return (
-                                    <View style={styles.castImageContainer}>
-                                        <View style={{ backgroundColor: '#ccc', borderRadius: 8, overflow: 'hidden', marginBottom: 8}}>
-                                            <Image style={styles.castImage} source={{uri: getProfileURI(item.profile_path)}} />
-                                        </View>
-                                        <Text style={styles.castName}>{item.name}</Text>
-                                        <Text style={styles.castCharacterName}>{item.character}</Text> 
-                                    </View>
-                                )
-                            }}
+                            data={casts}
+                            renderItem={renderCredits}
                             horizontal={true}
-                            keyExtractor={item => item.id + ''}
+                            keyExtractor={keyExtractor}
                             showsHorizontalScrollIndicator={false} />
                     </View>
                 </View>
@@ -134,23 +143,13 @@ export const Detail = ({route}) => {
                     <Text style={styles.sectionTitle}>Crew</Text>
                     <View style={styles.castContainer}>
                         <FlatList
-                            updateCellsBatchingPeriod={1000}
+                            updateCellsBatchingPeriod={60000}
                             maxToRenderPerBatch={5}
                             removeClippedSubviews={true}
-                            data={(crews || []).filter(crew => crew.profile_path != null)}
-                            renderItem={({item}) => {
-                                return (
-                                    <View style={styles.castImageContainer}>
-                                        <View style={{ backgroundColor: '#ccc', borderRadius: 8, overflow: 'hidden', marginBottom: 8}}>
-                                            <Image style={styles.castImage} source={{uri: getProfileURI(item.profile_path)}} />
-                                        </View>
-                                        <Text style={styles.castName}>{item.name}</Text>
-                                        <Text style={styles.castCharacterName}>{item.job}</Text> 
-                                    </View>
-                                )}
-                            }
+                            data={crews}
+                            renderItem={renderCredits}
                             horizontal={true}
-                            keyExtractor={item => item.id + '' + item.credit_id}
+                            keyExtractor={keyExtractor}
                             showsHorizontalScrollIndicator={false} />
                     </View>
                 </View>
