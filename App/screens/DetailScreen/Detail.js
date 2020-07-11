@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Image, StyleSheet, Dimensions, Text, FlatList, ScrollView } from 'react-native';
-import FastImage from 'react-native-fast-image'
 import { Stars } from './component';
 
 const DEVICE = Dimensions.get('window');
@@ -67,7 +66,7 @@ export const Detail = ({route}) => {
 
     return (
             <ScrollView>
-            <FastImage 
+            <Image 
                 source={{uri:getBackdropURI(backdrop_path)}} 
                 style={styles.backdrop}
                 blurRadius={1}
@@ -75,7 +74,7 @@ export const Detail = ({route}) => {
             <View style={styles.container}>
                 <View style={styles.headContainer}>
                     <View style={styles.posterContainer}>
-                        <FastImage
+                        <Image
                         source={{uri: getPosterURI(poster_path)}}
                         style={styles.poster}
                         resizeMode='cover' />
@@ -117,7 +116,7 @@ export const Detail = ({route}) => {
                                 return (
                                     <View style={styles.castImageContainer}>
                                         <View style={{ backgroundColor: '#ccc', borderRadius: 8, overflow: 'hidden', marginBottom: 8}}>
-                                            <FastImage style={styles.castImage} source={{uri: getProfileURI(item.profile_path)}} />
+                                            <Image style={styles.castImage} source={{uri: getProfileURI(item.profile_path)}} />
                                         </View>
                                         <Text style={styles.castName}>{item.name}</Text>
                                         <Text style={styles.castCharacterName}>{item.character}</Text> 
@@ -143,7 +142,7 @@ export const Detail = ({route}) => {
                                 return (
                                     <View style={styles.castImageContainer}>
                                         <View style={{ backgroundColor: '#ccc', borderRadius: 8, overflow: 'hidden', marginBottom: 8}}>
-                                            <FastImage style={styles.castImage} source={{uri: getProfileURI(item.profile_path)}} />
+                                            <Image style={styles.castImage} source={{uri: getProfileURI(item.profile_path)}} />
                                         </View>
                                         <Text style={styles.castName}>{item.name}</Text>
                                         <Text style={styles.castCharacterName}>{item.job}</Text> 
