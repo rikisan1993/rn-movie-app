@@ -1,10 +1,15 @@
 import React from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import Icon from '@expo/vector-icons/FontAwesome';
-import { AuthContext } from '../../auth-context';
 
-export const Profile = () => {
-    const { signout } = React.useContext(AuthContext);
+import { connect } from 'react-redux';
+import { logout } from '../../redux/actions/auth-action';
+
+const mapStateToProps = state => ({
+    auth: state
+})
+
+export const Profile = connect(mapStateToProps, { logout })(({logout}) => {
     return (
         <View>
             <Image source={{uri: 'https://images.unsplash.com/uploads/141148589884100082977/a816dbd7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'}} style={styles.backdrop} />
@@ -21,7 +26,7 @@ export const Profile = () => {
                 </View>
 
                 <View>
-                    <TouchableOpacity style={styles.signout} onPress={signout}>
+                    <TouchableOpacity style={styles.signout} onPress={logout}>
                         <Text style={styles.signoutText}>Sign Out</Text>
                     </TouchableOpacity>
                 </View>
@@ -43,7 +48,7 @@ export const Profile = () => {
             </View>
         </View>
     )
-}
+})
 
 const styles = StyleSheet.create({
     backdrop: {

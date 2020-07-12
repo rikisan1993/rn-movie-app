@@ -1,23 +1,13 @@
 import React from 'react';
 import { View, Image, StyleSheet, Dimensions, Text, FlatList, ScrollView } from 'react-native';
+import { connect } from 'react-redux';
+
+import { fetchMovie } from '../../redux/actions/movie-action';
 import { Stars } from './component';
 
 const DEVICE = Dimensions.get('window');
 
-import { base_url, getCredits } from '../../constants';
-
-const getProfileURI = path => {        
-    return `${base_url}w185${path}`
-}
-
-const mapProfileURI = list => {
-    return [...list].map(item => {
-        item.profile_uri = getProfileURI(item.profile_path);
-        return item;
-    })
-}
-
-const Loading = React.memo(() => (<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text>Loading Movie Details ... </Text></View>));
+const Loading = () => (<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text>Loading Movie Details ... </Text></View>);
 
 const Genre = React.memo(({ genre }) => (
     <View style={styles.genreWrapper}>
@@ -41,58 +31,24 @@ const renderCredits = ({item}) => <Credits profile_uri={item.profile_uri} name={
 
 const keyExtractor = item => item.id + '' + (item.credit_id || '')
 
-export const Detail = ({route}) => {
-    const [casts, setCasts] = React.useState([]);
-    const [crews, setCrews] = React.useState([]);
-    const [movie, setMovie] = React.useState({});
-    const [isLoading, setIsLoading] = React.useState(true);
+const mapStateToProps = state => ({
+    movie: state.movie
+})
 
+export const Detail = connect(mapStateToProps, {fetchMovie})(({ route, fetchMovie, movie: { casts, crews, isLoading, movie }}) => {
     React.useEffect(() => {
-        let cancelled = false;
-        setMovie(route.params.movie)
-        fetch(getCredits(movie.id))
-            .then(res => {
-                if(cancelled) throw new Error('cancelled!')
-                return res;
-            })
-            .then(res => res.json())
-            .then(({cast, crew}) => ({cast: mapProfileURI(cast), crew: mapProfileURI(crew)}))
-            .then(({cast, crew}) => {
-                if(!cancelled) {
-                    setCasts(([...cast] || []).filter(item => item.profile_path));
-                    setCrews(([...crew] || []).filter(item => item.profile_path));
-                }
-            })
-            .then(_ => {
-                setIsLoading(false);
-            })
-            .catch(err => {})
-
-        return () => {
-            cancelled = true;
-        }
-    })  
+        const {id} = route.params
+        fetchMovie({id});
+    }, [fetchMovie])
     
-    
-
-    if(isLoading) {
+    if(isLoading || !movie) {
         return <Loading />
     }
-
-    const {
-        backdrop_uri, 
-        genres, 
-        title, 
-        vote_average, 
-        overview,
-        release_year,
-        poster_uri
-    } = movie;
 
     return (
             <ScrollView>
             <Image 
-                source={{uri:backdrop_uri}} 
+                source={{uri: movie.backdrop_uri}} 
                 style={styles.backdrop}
                 blurRadius={1}
                 resizeMode={'cover'} />
@@ -100,27 +56,27 @@ export const Detail = ({route}) => {
                 <View style={styles.headContainer}>
                     <View style={styles.posterContainer}>
                         <Image
-                        source={{uri: poster_uri}}
+                        source={{uri: movie.poster_uri}}
                         style={styles.poster}
                         resizeMode='cover' />
                     </View>
                     <View style={{ flex: 1 }}>
                         <Text style={styles.title}>
-                            {title}
+                            {movie.title}
                         </Text>
                         <Text style={styles.year}>
-                            {release_year}
+                            {movie.release_year}
                         </Text>
-                        <View style={styles.genreContainer}>{genreMapper(genres)}</View>
+                        <View style={styles.genreContainer}>{genreMapper(movie.genres)}</View>
                         <View style={{ justifyContent: 'flex-end'}}>
-                            <Stars value={vote_average}/>
+                            <Stars value={movie.vote_average}/>
                         </View>
                     </View>
                 </View>
 
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Introduction</Text>
-                    <Text style={styles.overview}>{overview}</Text>
+                    <Text style={styles.overview}>{movie.overview}</Text>
                 </View>
 
                 <View style={styles.section}>
@@ -156,7 +112,7 @@ export const Detail = ({route}) => {
             </View>
             </ScrollView>
     )
-}
+})
 
 const styles = StyleSheet.create({
     container: {

@@ -1,11 +1,10 @@
-import 'react-native-gesture-handler';
 import React from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { AuthContext } from './auth-context';
+import { connect } from 'react-redux';
+
 import { Login, Home, Detail, Profile } from './screens';
-import { AboutButton, ScreenContainer, Title } from './components';
+import { AboutButton, Title } from './components';
 
 const HomeStack = createStackNavigator();
 const HomeStackScreen = ({ navigation }) => (
@@ -36,30 +35,17 @@ const RootStackScreen = ({userToken}) => (
     </RootStack.Navigator>
 )
 
-export default () => {
-    const [userToken, setUserToken] = React.useState(null);
-    const authContext = React.useMemo(() => {
-        return {
-            signin: ({token}) => setUserToken(token),
-            signout: () => setUserToken(null),
-        }
-    })
+const App = ({auth}) => {
 
     return (
-        <SafeAreaView style={styles.container}>
-            <ScreenContainer style={{ marginTop: 30, flex: 1 }}>
-                <AuthContext.Provider value={authContext}>
-                    <NavigationContainer>
-                        <RootStackScreen userToken={userToken} />
-                    </NavigationContainer>
-                </AuthContext.Provider>
-            </ScreenContainer>
-        </SafeAreaView>
+        <NavigationContainer>
+            <RootStackScreen userToken={auth.usertoken} />
+        </NavigationContainer>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
+const mapStateToProps = state => {
+    return {
+        auth: state.auth
     }
-})
+}
+export default connect(mapStateToProps)(App);

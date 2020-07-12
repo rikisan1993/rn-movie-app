@@ -1,12 +1,15 @@
 import React from 'react';
 import { View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import Icon from '@expo/vector-icons/FontAwesome5';
-import { AuthContext } from '../../auth-context';
 
-export const Login = () => {
+import { connect } from 'react-redux';
+import { login } from '../../redux/actions/auth-action';
 
-    const { signin } = React.useContext(AuthContext);
+const mapStateToProps = state => ({
+    auth: state
+})
 
+export const Login = connect(mapStateToProps, { login })( ({login}) => {
     return (
         <View style={styles.container}>
             <View style={styles.logo}>
@@ -24,13 +27,13 @@ export const Login = () => {
                     <TextInput style={styles.loginInput} placeholder='password' secureTextEntry={true} />
                 </View>
 
-                <TouchableOpacity style={styles.loginButton} onPress={() => signin({token: 'test'})}>
+                <TouchableOpacity style={styles.loginButton} onPress={login}>
                     <Text style={styles.loginButtonText}>login</Text>
                 </TouchableOpacity>
             </View>
         </View>
     )
-}
+})
 
 const styles = StyleSheet.create({
     container: {
